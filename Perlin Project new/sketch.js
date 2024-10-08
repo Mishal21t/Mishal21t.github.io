@@ -2,7 +2,7 @@
 // Mishal
 // 5th Oct 2024
 
-let rectwidth = 10;
+let rectWidth = 10;
 let noiseStart = 0;
 let noiseStep = 0.01;
 
@@ -25,12 +25,19 @@ function generateTerrain (){
     rect(x, height, rectWidth, -rectHeight);
     currentNoise += noiseStep; 
   }
-
 }
 
 function keyPressed(){
-  if (key === LEFT_ARROW) {
-    rectwidth = max(5, rectwidth , 5, rectHeight);
-    
+  if (keyCode === RIGHT_ARROW){
+    rectWidth += 2 ;
   }
+  if (keyCode === LEFT_ARROW){
+    rectWidth -= 2 ; 
+  }
+  if (rectWidth < 1) {
+    rectWidth = 1 ;
+  }
+  generateTerrain();
+
+  
 }
