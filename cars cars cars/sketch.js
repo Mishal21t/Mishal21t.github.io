@@ -19,13 +19,27 @@ function setup() {
     westBound.push(westCar);
 
   }
+  trafficLight = new TrafficLight();
 }
 
 function draw() {
   background(220);
   drawRoad();
+  trafficLight.display(); // display traffic light in the top left corner
 
-  // move and siplay all vehicles
+  // move cars only if the traffic light is green
+  if(trafficLight.isGreen()) {
+    for(let car of eastBound) {
+      car.drive(trafficLight);
+    }
+
+    for(let car of westBound) {
+      car.drive(trafficLight);
+    }
+  }
+  trafficLight.automaticSwitch();
+
+  // move and diplay all vehicles
   for(let car of eastBound){
     car.drive();
   }
@@ -88,7 +102,13 @@ class Vehicle {
       this.x = width;
     }
   }
-   
+
+  drive(trafficLight) {
+    if(trafficLight.isGreen()) {
+      this.move();
+    }
+    this.display();
+  }
   drive(){
     this.move();
     this.display();
@@ -99,6 +119,7 @@ class TrafficLight {
   constructor(){
     this.state = "green";   // green by default
     this.redFrames = 0;    // red by a timer
+    this.redDuration = 120;
   }
 
   display(){
@@ -109,34 +130,53 @@ class TrafficLight {
       fill(0, 255, 0);
     }
     else {
-      fill(255, 0, 0);
+      fill(255, 0, 0); //red light 
     }
     ellipse(30, 50, 20, 20);
   }
 
   isGreen(){
-    // red light timer
-    if(this.state === "red") {
-      this.redFrames++ ;
-      if (this.redFrames >= 120) {
-        this.state = "green";  // turn green light after 120 frames
-        this.redFrames = 0;
-      }
-      return false;
-    }
-    return true;
+    return this.state === "green";
   }
-  toggle(){
-    if(this.state === "green") {
-      this.state = "red";  // turn red
 
+  startRed(){
+    this.state = "red"; // change traffic light to red
+    this.redFrames = 0; // reset red light timer
+  }
+
+  automaticSwitch() {
+    // if the light is red count the frames and switch back to green
+    if (this.state === "red") {
+      this.redFrames++ ;
+      if (this.redFrames >= this.redDuration) {
+        this.state = "green";
+      }
     }
   }
+
 }
 
 // mouse clicled to add cars
 
-// function mousePressed() {
-//   if(mouseButton === LEFT)
-// }
+function mousePressed() {
+  if(mouseButton === LEFT){
+    if (keyIsDown(SHIFT)) {
+      let newWestCar = new Vehicle(0, color(random(255), random(255), random(255)), random(width), random(300,350), -1, random(2, 5));
+      westBound.push(newWestCar);
+    }
+    else {
+      let newEastCar = new Vehicle(0, color(random(255), random(255), random(255)), random(width), random(250,300), 1, random(2, 5));
+      eastBound.push(newEastCar);
+    }
+  }
+}
+
+// use spacebar to start the traffic light
+function keyPressed() {
+  if(keyCode === 32) {
+    trafficLight.startRed();  // start red ligth when spacebar is pressed
+  }
+}
+
+
 
