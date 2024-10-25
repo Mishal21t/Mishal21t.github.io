@@ -6,6 +6,9 @@
 let eastBound = [];
 let westBound = [];
 let trafficLight;
+let redLightDuration = 120;
+let redLightTimer = 0;
+
 
 
 function setup() {
@@ -19,6 +22,7 @@ function setup() {
     westBound.push(westCar);
 
   }
+  // initialize traffic light 
   trafficLight = new TrafficLight();
 }
 
@@ -26,19 +30,6 @@ function draw() {
   background(220);
   drawRoad();
   trafficLight.display(); // display traffic light in the top left corner
-
-  // move cars only if the traffic light is green
-  if(trafficLight.isGreen()) {
-    for(let car of eastBound) {
-      car.drive(trafficLight);
-    }
-
-    for(let car of westBound) {
-      car.drive(trafficLight);
-    }
-  }
-  trafficLight.automaticSwitch();
-
   // move and diplay all vehicles
   for(let car of eastBound){
     car.drive();
@@ -46,6 +37,14 @@ function draw() {
 
   for(let car of westBound){
     car.drive();
+  }
+
+  //manage redLight Timer
+  if (redLightTimer > 0){
+    redLightTimer--; // countdown for red light timer
+  }
+  else{
+    trafficLight.setGreen();
   }
 }
 
@@ -69,7 +68,6 @@ class Vehicle {
     this.y = y;
     this.direction = direction;
     this.speed = speed;
-
   }
 
   display() {
@@ -103,55 +101,42 @@ class Vehicle {
     }
   }
 
-  drive(trafficLight) {
-    if(trafficLight.isGreen()) {
+  drive() {
+    if (!trafficLight.isRed()){
       this.move();
     }
     this.display();
   }
-  drive(){
-    this.move();
-    this.display();
-  }
+
 }
 
 class TrafficLight {
   constructor(){
     this.state = "green";   // green by default
-    this.redFrames = 0;    // red by a timer
-    this.redDuration = 120;
   }
 
   display(){
     fill(0);
     rect(20, 20, 20, 60);
-
-    if (this.state === "green") {
-      fill(0, 255, 0);
-    }
-    else {
-      fill(255, 0, 0); //red light 
-    }
+    fill(this.state === "green" ? "green" : "red");
     ellipse(30, 50, 20, 20);
+  }  
+
+  isRed(){
+    return this.state === "red";  // check if traffic light is red 
+  }
+
+  setRed(){
+    this.state = "red";
+    redLightTimer = redLightDuration;
   }
 
   isGreen(){
-    return this.state === "green";
+    return this.state === "green"; 
   }
 
-  startRed(){
-    this.state = "red"; // change traffic light to red
-    this.redFrames = 0; // reset red light timer
-  }
-
-  automaticSwitch() {
-    // if the light is red count the frames and switch back to green
-    if (this.state === "red") {
-      this.redFrames++ ;
-      if (this.redFrames >= this.redDuration) {
-        this.state = "green";
-      }
-    }
+  setGreen(){
+    this.state = "green"; //change to green
   }
 
 }
@@ -174,7 +159,7 @@ function mousePressed() {
 // use spacebar to start the traffic light
 function keyPressed() {
   if(keyCode === 32) {
-    trafficLight.startRed();  // start red ligth when spacebar is pressed
+    trafficLight.setRed();  // start red ligth when spacebar is pressed
   }
 }
 
