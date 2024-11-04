@@ -10,6 +10,7 @@ let NUM_ROWS = 4;
 let NUM_COLS = 5;
 let rectWidth, rectHeight;
 let currentRow, currentCol;
+let isCrossPattern = true;
 let gridData = [[0,0,0,0,0],
                 [0,0,0,0,0],
                 [0,255,0,0,0],
@@ -22,6 +23,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   rectWidth = width/NUM_COLS;
   rectHeight = height/NUM_ROWS;
+  randomizeGrid();
 }
 
 function draw() {
@@ -32,18 +34,31 @@ function draw() {
 }
 
 
-
+function keyPressed(){
+  if(key ===' '){
+    isCrossPattern = !isCrossPattern;
+  }
+}
 function mousePressed(){
   // cross-shaped pattern flips on a mouseclick. Boundary conditions are checked within the flip function to ensure in-bounds access for array
   if(keyIsDown(SHIFT)){      // if shift key is clicked then flip that specfic box
     flip(currentCol, currentRow);
   }
   else{
-    flip(currentCol, currentRow);
-    flip(currentCol-1, currentRow);
-    flip(currentCol+1, currentRow);
-    flip(currentCol, currentRow-1);
-    flip(currentCol, currentRow+1);
+    if (isCrossPattern){
+      flip(currentCol, currentRow);
+      flip(currentCol-1, currentRow);
+      flip(currentCol+1, currentRow);
+      flip(currentCol, currentRow-1);
+      flip(currentCol, currentRow+1);
+    } else{
+      // square pattern flip (center and all four blocks)
+      for(let dx = -1; dx <=1; dx++){
+        for(let dy = -1; dy <= 1; dy++){
+          flip(currentCol + dx, currentRow + dy);
+        }
+      }
+    }
   }
 }
 
@@ -70,6 +85,16 @@ function drawGrid(){
     for (let y = 0; y < NUM_ROWS; y++){
       fill(gridData[y][x]); 
       rect(x*rectWidth, y*rectHeight, rectWidth, rectHeight);
+
+      // overlay for squares that would fli[ on click
+      if(x === currentCol && y === currentRow ||
+        x === currentCol -1 && y === currentRow ||
+        x === currentCol + 1 && y === currentRow ||
+        x === currentCol && y === currentRow - 1 ||
+        x === currentCol && y === currentRow + 1 ) {
+        fill(255, 0, 0, 100);
+        rect(x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+      }
     }
   }
 }
@@ -89,6 +114,10 @@ function win(){
   fill(0);
 }
 
-function randomStart(){
-
+function randomizeGrid(){
+  for(let row = 0; row < NUM_COLS;  row++){
+    for(let col = 0; col < NUM_COLS; col++) {
+      gridData[row][col] = random ([0, 255]); // randomly assign 0 to 255
+    }
+  }
 }
