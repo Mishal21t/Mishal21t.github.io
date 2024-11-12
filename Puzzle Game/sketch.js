@@ -11,6 +11,7 @@ let NUM_COLS = 5;
 let rectWidth, rectHeight;
 let currentRow, currentCol;
 let isCrossPattern = true;
+let patternType = "cross";
 let gridData = [[0,0,0,0,0],
                 [0,0,0,0,0],
                 [0,255,0,0,0],
@@ -35,28 +36,34 @@ function draw() {
 
 
 function keyPressed(){
-  if(key ===' '){
-    isCrossPattern = !isCrossPattern;
+  if(keyCode === 32){
+    if (patternType === "cross"){
+      patternType = "square";
+    }
+    else{
+      patternType = "cross";
+    }
+    console.log('pressed', patternType);
   }
-}
+}    
 function mousePressed(){
   // cross-shaped pattern flips on a mouseclick. Boundary conditions are checked within the flip function to ensure in-bounds access for array
   if(keyIsDown(SHIFT)){      // if shift key is clicked then flip that specfic box
     flip(currentCol, currentRow);
-  }
+  }      
   else{
-    if (isCrossPattern){
+    if (patternType === "cross"){
       flip(currentCol, currentRow);
       flip(currentCol-1, currentRow);
       flip(currentCol+1, currentRow);
       flip(currentCol, currentRow-1);
       flip(currentCol, currentRow+1);
-    } else{
+    } else if (patternType === "square") {
       // square pattern flip (center and all four blocks)
       for(let dx = -1; dx <=1; dx++){
         for(let dy = -1; dy <= 1; dy++){
           flip(currentCol + dx, currentRow + dy);
-        }
+        } 
       }
     }
   }
@@ -86,7 +93,7 @@ function drawGrid(){
       fill(gridData[y][x]); 
       rect(x*rectWidth, y*rectHeight, rectWidth, rectHeight);
 
-      // overlay for squares that would fli[ on click
+      // overlay for squares that would flip on click
       if(x === currentCol && y === currentRow ||
         x === currentCol -1 && y === currentRow ||
         x === currentCol + 1 && y === currentRow ||
@@ -94,6 +101,10 @@ function drawGrid(){
         x === currentCol && y === currentRow + 1 ) {
         fill(255, 0, 0, 100);
         rect(x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+      } else if (patternType === "square" && x >= currentCol - 1 && x <= currentCol + 1 &&
+                y >= currentRow - 1 && x <= currentRow + 1) {
+        fill(255,0,0,100);
+        rect(x* rectWidth, y * rectHeight, rectWidth, rectHeight);
       }
     }
   }
@@ -105,7 +116,7 @@ function win(){
   for(let y = 0; y < NUM_COLS; y++){
     for(let x = 0; x < NUM_ROWS; x++){
       if(gridData[x][y] !== endMatch)
-        return;
+        return ;
     }
   }
   textSize(35);
@@ -115,9 +126,15 @@ function win(){
 }
 
 function randomizeGrid(){
-  for(let row = 0; row < NUM_COLS;  row++){
+  for(let row = 0; row < NUM_ROWS;  row++){
     for(let col = 0; col < NUM_COLS; col++) {
-      gridData[row][col] = random ([0, 255]); // randomly assign 0 to 255
+      let gridNumber = round(random(0, 1));
+      if(gridNumber === 1){
+        gridData[row][col] = 255;
+      } 
+      else {
+        gridData[row][col] = 0; 
+      }
     }
   }
 }
