@@ -14,7 +14,7 @@ let isCrossPattern = true;
 let patternType = "cross";
 let gridData = [[0,0,0,0,0],
                 [0,0,0,0,0],
-                [0,255,0,0,0],
+                [0,255,0,0,0],  
                 [255,255,255,0,0]];
 
 
