@@ -20,8 +20,8 @@ function draw() {
 }
 
 function drawLine( x1, y1, x2, y2, depth) {
-  strokeWeight(map(depth, 1, 6, 1, 8));
-//draw a line segment connecting (x1,y1) to (x2,y2)
+  strokeWeight(map(depth, 1, 6, 1, 4));
+  //draw a line segment connecting (x1,y1) to (x2,y2)
   line(x1, y1, x2, y2);
   strokeWeight(1);
 }
@@ -41,25 +41,24 @@ function drawTree(x1, y1, angle, depth, branchAngle) {
     drawTree(x2, y2, angle+ branchAngle, depth-1, branchAngle);
     drawTree(x2, y2, angle, depth - 1, branchAngle);
 
-    drawLeaf(x2, y2, depth);
-  console.log('Depth', depth, 'leafDepth', leafDepth);
+    // drawLeaf(x2, y2, depth);
 
   }
 }
 
 function drawLeaf(x, y, depth){
-  let leafSize = random(5, map(depth, 1, leafDepth, 20, 10));
+  let leafSize = random(5, map(depth, 1, 6, 20, 10));
   fill(random(255), random(255), random(255));
   circle(x, y, leafSize);
 }
 
 function keyPressed(){
   // decrease leaf depth with'z', but not below 1
-  if ((key === 'z' || key === 'Z') && leafDepth >= 1){
-    leafDepth--;
+  if ((key === 'z' || key === 'Z') && leafDepth < 6){
+    leafDepth++;
   }
   // increase leaf depthwith 'x' , yp tp maximum depth
-  if ((key === 'x' || key === 'X') && leafDepth <= 1){
-    leafDepth++;
+  if ((key === 'x' || key === 'X') && leafDepth > 0){
+    leafDepth--;
   }
 }
