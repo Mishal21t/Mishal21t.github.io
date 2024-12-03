@@ -5,11 +5,13 @@
 
 
 let img;
-let page; 
 
 function preload(){
   img = loadImage('/assets/applogo3.png');
   imgTwo = loadImage('assets/appLogo2.png');
+  iconOne = loadImage('assets/HomeIcon.png');
+  iconTwo = loadImage('assets/ExploreIcon.png');
+  iconThree = loadImage('assets/ExploreIcon2.png');
 }
 
 function setup() {
@@ -17,25 +19,11 @@ function setup() {
 }
 
 function draw() {
-  background(245, 233, 235);
+  background(255, 218, 224);
   image(img, 350, width/4);
   image(imgTwo, 215, 315);
-
-  // userLogin();
+  image(iconOne, width2, height/2 );
+  image(iconTwo, width2, height/2 );
+  image(iconThree, width2, height/2 );
 
 }
-
-function appPages(){
-  if(keyCode === 72){
-  
-  }
-}
-function drawLoginPage(){
-  fill(245, 233, 235);
-  text('User Login');
-
-
-
-  
-}
-
