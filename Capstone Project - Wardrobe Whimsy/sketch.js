@@ -1,4 +1,4 @@
-// Whimsy Wardrobe
+// Trend Chest
 // Mishal & Cinnia
 // 26 Nov, 24
 //
@@ -20,6 +20,7 @@ function HomePage(){
     image(iconTwo, 550, 490, 100, 95 );
     image(iconThree, 220, 490, 90, 90);
   }
+  thumbPrint();
 }
 
 function preload(){
@@ -48,26 +49,39 @@ function draw() {
   else if(currentPage === "loginPage"){
     LoginPage();
   }
+  // rect(0,0,180,50)
+}
+
+function thumbPrint(){
+  image(img, 8, 5, 50,40);
+  textFont('Courier New');
+  textSize(18);
+  stroke(15);
+  text('TrendChest', 114, 27);
+
 }
 
 function mouseClicked(){
-  if(mouseX > 384 && mouseX >= 490){
-                               
+  if(mouseX > 0 && mouseX <= 180){
+    currentPage = 'homePage';
+  }
+  else if(mouseX > 550 && mouseX >= 490){  // Icon Two (LOGIN PAGE)
+    currentPage = 'loginPage';                         
+  }
+  else if(mouseX > 220 && mouseY >= 490){
+    currentPage = 'explorePage';
   }
 
 }
 
 function ExplorePage(){
   background(255, 218, 224);
-  if(currentPage === "explorePage"){
-    
-  }
+  thumbPrint();
 
 }
 
 function LoginPage(){
   background(255, 218, 224);
-  if(currentPage === "loginPage"){
-
-  }
+  text("Enter Your Username", height/2, width/2);
+  thumbPrint();
 }
